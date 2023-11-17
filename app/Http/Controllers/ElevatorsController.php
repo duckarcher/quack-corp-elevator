@@ -26,12 +26,12 @@ class ElevatorsController extends Controller
     public function use(Request $request)
     {
         $user = Auth::user();
-        $elevator = Elevator::where('id', $request->elevator_id)->firstOrFail();
+        $elevator = Elevator::findOrFail($request->elevator_id);
 
-        if ($user->current_floor != $elevator->floor) {
+        if ($user->current_floor !== $elevator->floor) {
             return response()->json(['message' => 'you have to be in the same floor'], 403);
         }
-        if (in_array($request->target_floor, $user->role->restrictedFloors())  ) {
+        if (in_array($request->target_floor, $user->role->restrictedFloors(), true)) {
             return response()->json(['message' => 'Restricted floor'], 403);
         }
 
